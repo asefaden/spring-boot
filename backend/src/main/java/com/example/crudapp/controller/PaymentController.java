@@ -19,7 +19,7 @@ public class PaymentController {
     public ResponseEntity<?> initializePayment(@RequestBody Map<String, Object> paymentRequest) {
         String txRef = "TXN-" + UUID.randomUUID().toString().substring(0, 8);
         RestTemplate restTemplate = new RestTemplate();
-        
+
         // ለChapa API የሚላክ መረጃ
         Map<String, Object> body = new HashMap<>();
         body.put("amount", paymentRequest.get("price"));
@@ -29,7 +29,7 @@ public class PaymentController {
         body.put("last_name", "Cloud");
         body.put("tx_ref", txRef);
         body.put("callback_url", "https://webhook.site");
-        //body.put("return_url", "http://localhost:3000/?status=success");
+        // body.put("return_url", "http://localhost:3000/?status=success");
         body.put("return url", "https://spring.app.aletcloud.com/?status=success");
         body.put("customization", Map.of("title", paymentRequest.get("serviceName")));
 
@@ -38,13 +38,12 @@ public class PaymentController {
         headers.set("Authorization", CHAPA_AUTH_KEY);
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
-        
+
         try {
             ResponseEntity<Map> response = restTemplate.postForEntity(
-                "https://chapa.co", 
-                entity, 
-                Map.class
-            );
+                    "https://chapa.co",
+                    entity,
+                    Map.class);
             return ResponseEntity.ok(response.getBody());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
